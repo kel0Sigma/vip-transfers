@@ -2,8 +2,9 @@
 let supabaseClient = null;
 
 function initSupabase() {
-  if (typeof window.supabase !== 'undefined' && SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
-    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const sb = window._supa || window.supabase;
+  if (sb && SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
+    supabaseClient = sb.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   }
 }
 
@@ -27,7 +28,6 @@ function openBookingModal() {
   const dt   = document.getElementById('b_datetime').value;
 
   if (!from || !to || !dt) {
-    // Highlight empty fields
     ['b_from','b_to','b_datetime'].forEach(id => {
       const el = document.getElementById(id);
       if (!el.value) { el.classList.add('error'); setTimeout(() => el.classList.remove('error'), 2000); }
@@ -49,22 +49,16 @@ document.getElementById('bookingModal').addEventListener('click', function(e) {
 
 // ─── CHECK AVAILABILITY ──────────────────────────────────────────────────────
 async function checkAvailability(datetime, vehicle) {
-  if (!supabaseClient) return true; // if not configured, allow
-
+  if (!supabaseClient) return true;
   const dt = new Date(datetime);
-  const buffer = 3 * 60 * 60 * 1000; // 3 hour buffer
+  const buffer = 3 * 60 * 60 * 1000;
   const rangeStart = new Date(dt.getTime() - buffer).toISOString();
   const rangeEnd   = new Date(dt.getTime() + buffer).toISOString();
-
-  const { data, error } = await supabase
-    .from('bookings')
-    .select('id')
-    .eq('vehicle', vehicle)
-    .gte('pickup_datetime', rangeStart)
-    .lte('pickup_datetime', rangeEnd)
+  const { data, error } = await supabaseClient
+    .from('bookings').select('id').eq('vehicle', vehicle)
+    .gte('pickup_datetime', rangeStart).lte('pickup_datetime', rangeEnd)
     .in('status', ['confirmed', 'pending']);
-
-  if (error) return true; // on error, allow booking
+  if (error) return true;
   return data.length === 0;
 }
 
@@ -90,7 +84,6 @@ async function submitBooking() {
     return;
   }
 
-  // Loading state
   statusEl.className = 'status-msg loading';
   statusEl.textContent = t('booking_loading');
   submitBtn.disabled = true;
@@ -99,7 +92,6 @@ async function submitBooking() {
   try {
     if (!supabaseClient) throw new Error('not_configured');
 
-    // 1. Check availability
     const available = await checkAvailability(dt, vehicle);
     if (!available) {
       statusEl.className = 'status-msg error';
@@ -109,34 +101,24 @@ async function submitBooking() {
       return;
     }
 
-    // 2. Save to database
     const { data, error } = await supabaseClient.from('bookings').insert([{
       name, phone, email, vehicle,
-      pickup_location: from,
-      dropoff_location: to,
+      pickup_location: from, dropoff_location: to,
       pickup_datetime: new Date(dt).toISOString(),
-      passengers: parseInt(pax),
-      service_type: service,
-      notes,
-      status: 'pending',
-      language: currentLang,
+      passengers: parseInt(pax), service_type: service,
+      notes, status: 'pending', language: currentLang,
       created_at: new Date().toISOString()
     }]).select();
 
     if (error) throw error;
 
-    // 3. Send email notification via Supabase Edge Function
-    await supabaseClient.functions.invoke('send-booking-email', {
-      body: { booking: data[0] }
-    });
+    await supabaseClient.functions.invoke('send-booking-email', { body: { booking: data[0] } });
 
-    // Success
     statusEl.className = 'status-msg success';
     statusEl.textContent = t('booking_success');
     submitBtn.disabled = false;
     submitBtn.innerHTML = t('modal_submit');
 
-    // Reset form after 3s
     setTimeout(() => {
       closeModal();
       ['m_name','m_phone','m_email','m_notes'].forEach(id => document.getElementById(id).value = '');
@@ -145,9 +127,8 @@ async function submitBooking() {
 
   } catch (err) {
     if (err.message === 'not_configured') {
-      // Demo mode — show success anyway
       statusEl.className = 'status-msg success';
-      statusEl.textContent = '✓ [DEMO MODE] Booking received! Configure Supabase to enable full functionality.';
+      statusEl.textContent = '✓ [DEMO] Booking received! Configure Supabase to enable full functionality.';
     } else {
       statusEl.className = 'status-msg error';
       statusEl.textContent = t('booking_error');
@@ -177,17 +158,15 @@ async function submitContact() {
 
   try {
     if (!supabaseClient) throw new Error('not_configured');
-
     await supabaseClient.from('contact_messages').insert([{ name, email, phone, route, message: msg, created_at: new Date().toISOString() }]);
     await supabaseClient.functions.invoke('send-contact-email', { body: { name, email, phone, route, message: msg } });
-
     statusEl.className = 'status-msg success';
     statusEl.textContent = t('contact_success');
     ['c_name','c_email','c_phone','c_route','c_msg'].forEach(id => document.getElementById(id).value = '');
   } catch (err) {
     if (err.message === 'not_configured') {
       statusEl.className = 'status-msg success';
-      statusEl.textContent = '✓ [DEMO MODE] Message received!';
+      statusEl.textContent = '✓ [DEMO] Message received!';
     } else {
       statusEl.className = 'status-msg error';
       statusEl.textContent = t('contact_error');
