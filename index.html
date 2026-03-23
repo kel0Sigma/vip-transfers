@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>VIP Transfers — Premium Chauffeur Service</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --gold: #c9a84c; --gold-light: #e8c97a;
+    --dark: #0a0a0a; --dark2: #111111; --dark3: #1a1a1a;
+    --mid: #2a2a2a; --light: #f5f0e8; --text-muted: #888;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--dark); color: var(--light); font-family: 'Montserrat', sans-serif; font-weight: 300; overflow-x: hidden; }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--dark); }
+  ::-webkit-scrollbar-thumb { background: var(--gold); }
+
+  /* RTL support */
+  [dir="rtl"] { font-family: 'Montserrat', Arial, sans-serif; }
+  [dir="rtl"] .nav-links { flex-direction: row-reverse; }
+  [dir="rtl"] .divider { margin-left: auto; margin-right: 0; }
+  [dir="rtl"] .services-intro { direction: rtl; }
+  [dir="rtl"] .testi-card { border-left: none; border-right: 2px solid var(--gold); }
+  [dir="rtl"] .contact-items { align-items: flex-end; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 24px 60px; background: linear-gradient(to bottom, rgba(0,0,0,.85), transparent); backdrop-filter: blur(2px); transition: background .4s; }
+  nav.scrolled { background: rgba(10,10,10,.96); }
+  .logo { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 600; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; text-decoration: none; }
+  .logo span { color: var(--light); font-weight: 300; }
+  .nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
+  .nav-links a { color: var(--light); text-decoration: none; font-size: .75rem; letter-spacing: 2px; text-transform: uppercase; opacity: .8; transition: opacity .3s, color .3s; }
+  .nav-links a:hover { opacity: 1; color: var(--gold); }
+  .nav-cta { border: 1px solid var(--gold); color: var(--gold) !important; padding: 10px 24px; opacity: 1 !important; transition: background .3s, color .3s !important; }
+  .nav-cta:hover { background: var(--gold) !important; color: var(--dark) !important; }
+
+  /* LANGUAGE SWITCHER */
+  .lang-switcher { display: flex; gap: 6px; align-items: center; }
+  .lang-btn { background: transparent; border: 1px solid rgba(201,168,76,.3); color: var(--text-muted); padding: 5px 10px; font-family: 'Montserrat', sans-serif; font-size: .6rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all .3s; }
+  .lang-btn:hover, .lang-btn.active { border-color: var(--gold); color: var(--gold); }
+
+  /* HERO */
+  .hero { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 60%, rgba(201,168,76,.08) 0%, transparent 60%), radial-gradient(ellipse at 70% 30%, rgba(201,168,76,.05) 0%, transparent 50%), linear-gradient(160deg, #0a0a0a 0%, #141414 50%, #0d0d0d 100%); }
+  .hero-bg::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23c9a84c' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+  .hero-line { position: absolute; bottom: 120px; left: 0; right: 0; height: 1px; background: linear-gradient(to right, transparent 0%, var(--gold) 30%, var(--gold) 70%, transparent 100%); opacity: .2; }
+  .hero-content { position: relative; z-index: 2; max-width: 900px; padding: 0 24px; }
+  .hero-eyebrow { font-size: .65rem; letter-spacing: 6px; text-transform: uppercase; color: var(--gold); margin-bottom: 28px; opacity: 0; animation: fadeUp .8s ease .3s forwards; }
+  .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(3.5rem, 8vw, 7rem); font-weight: 300; line-height: 1.05; color: var(--light); margin-bottom: 32px; opacity: 0; animation: fadeUp .9s ease .5s forwards; }
+  .hero-title em { font-style: italic; color: var(--gold); }
+  .hero-sub { font-size: .8rem; letter-spacing: 2px; color: var(--text-muted); line-height: 2; max-width: 500px; margin: 0 auto 52px; opacity: 0; animation: fadeUp .9s ease .7s forwards; }
+  .hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; opacity: 0; animation: fadeUp .9s ease .9s forwards; }
+  .btn-primary { background: var(--gold); color: var(--dark); padding: 16px 44px; font-family: 'Montserrat', sans-serif; font-size: .7rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; text-decoration: none; border: none; cursor: pointer; transition: background .3s, transform .2s; }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+  .btn-outline { background: transparent; color: var(--light); padding: 16px 44px; font-family: 'Montserrat', sans-serif; font-size: .7rem; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; text-decoration: none; border: 1px solid rgba(255,255,255,.3); transition: border-color .3s, color .3s; }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* BOOKING STRIP */
+  .booking-strip { background: var(--dark3); border-top: 1px solid rgba(201,168,76,.2); border-bottom: 1px solid rgba(201,168,76,.2); padding: 44px 60px; }
+  .booking-strip h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); text-align: center; margin-bottom: 32px; font-weight: 400; }
+  .booking-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; max-width: 1200px; margin: 0 auto; align-items: end; }
+  .form-group label { display: block; font-size: .6rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+  .form-group input, .form-group select { width: 100%; background: var(--mid); border: 1px solid rgba(201,168,76,.25); color: var(--light); padding: 13px 16px; font-family: 'Montserrat', sans-serif; font-size: .75rem; font-weight: 300; outline: none; transition: border-color .3s; -webkit-appearance: none; }
+  .form-group input:focus, .form-group select:focus { border-color: var(--gold); }
+  .form-group select option { background: var(--mid); }
+  .form-group input::placeholder { color: var(--text-muted); }
+  .form-group input.error, .form-group select.error { border-color: #e74c3c; }
+
+  /* BOOKING MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.85); z-index: 200; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--dark3); border: 1px solid rgba(201,168,76,.3); max-width: 560px; width: 90%; padding: 52px; position: relative; animation: fadeUp .3s ease; }
+  .modal-close { position: absolute; top: 20px; right: 20px; background: none; border: none; color: var(--text-muted); font-size: 1.4rem; cursor: pointer; transition: color .3s; }
+  .modal-close:hover { color: var(--gold); }
+  .modal h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 300; color: var(--light); margin-bottom: 8px; }
+  .modal p.modal-sub { font-size: .72rem; color: var(--text-muted); margin-bottom: 32px; letter-spacing: 1px; }
+  .modal-form { display: flex; flex-direction: column; gap: 14px; }
+  .modal-form input, .modal-form select, .modal-form textarea { background: var(--mid); border: 1px solid rgba(201,168,76,.2); color: var(--light); padding: 13px 16px; font-family: 'Montserrat', sans-serif; font-size: .75rem; font-weight: 300; outline: none; transition: border-color .3s; width: 100%; -webkit-appearance: none; resize: none; }
+  .modal-form input:focus, .modal-form select:focus, .modal-form textarea:focus { border-color: var(--gold); }
+  .modal-form input::placeholder, .modal-form textarea::placeholder { color: var(--text-muted); }
+  .modal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  /* STATUS MESSAGES */
+  .status-msg { padding: 14px 18px; font-size: .72rem; letter-spacing: 1px; margin-top: 8px; display: none; }
+  .status-msg.success { background: rgba(39,174,96,.1); border: 1px solid rgba(39,174,96,.3); color: #2ecc71; display: block; }
+  .status-msg.error { background: rgba(231,76,60,.1); border: 1px solid rgba(231,76,60,.3); color: #e74c3c; display: block; }
+  .status-msg.loading { background: rgba(201,168,76,.1); border: 1px solid rgba(201,168,76,.3); color: var(--gold); display: block; }
+
+  /* SECTIONS */
+  section { padding: 120px 60px; }
+  .section-label { font-size: .6rem; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 300; line-height: 1.1; color: var(--light); margin-bottom: 20px; }
+  .section-title em { font-style: italic; color: var(--gold); }
+  .divider { width: 60px; height: 1px; background: var(--gold); margin: 28px 0; }
+
+  /* SERVICES */
+  .services { background: var(--dark2); }
+  .services-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; margin-bottom: 80px; }
+  .services-text p { font-size: .82rem; line-height: 2; color: var(--text-muted); max-width: 460px; }
+  .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+  .service-card { background: var(--dark3); padding: 48px 36px; border-bottom: 3px solid transparent; transition: border-color .3s, background .3s; }
+  .service-card:hover { border-color: var(--gold); background: #1e1e1e; }
+  .service-icon { font-size: 2rem; margin-bottom: 24px; display: block; }
+  .service-card h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 400; color: var(--light); margin-bottom: 14px; }
+  .service-card p { font-size: .75rem; line-height: 1.9; color: var(--text-muted); }
+
+  /* FLEET */
+  .fleet { background: var(--dark); }
+  .fleet-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 60px; }
+  .fleet-card { background: var(--dark3); border: 1px solid rgba(201,168,76,.1); transition: border-color .3s; }
+  .fleet-card:hover { border-color: var(--gold); }
+  .fleet-img { width: 100%; height: 200px; background: linear-gradient(135deg, #1a1a1a, #252525); display: flex; align-items: center; justify-content: center; font-size: 4rem; }
+  .fleet-info { padding: 28px 28px 32px; }
+  .fleet-info h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; color: var(--light); margin-bottom: 8px; }
+  .fleet-info p { font-size: .7rem; color: var(--text-muted); letter-spacing: 1px; margin-bottom: 20px; }
+  .fleet-specs { display: flex; gap: 24px; font-size: .65rem; letter-spacing: 1px; color: var(--gold); text-transform: uppercase; }
+
+  /* WHY */
+  .why { background: var(--dark3); }
+  .why-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 48px; margin-top: 64px; }
+  .why-number { font-family: 'Cormorant Garamond', serif; font-size: 3.5rem; font-weight: 300; color: rgba(201,168,76,.2); line-height: 1; margin-bottom: 16px; }
+  .why-item h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 400; color: var(--light); margin-bottom: 12px; }
+  .why-item p { font-size: .73rem; line-height: 1.9; color: var(--text-muted); }
+
+  /* DESTINATIONS */
+  .destinations { background: var(--dark2); }
+  .dest-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: auto auto; gap: 2px; margin-top: 60px; }
+  .dest-card { position: relative; overflow: hidden; padding: 52px 40px; background: var(--dark3); transition: background .3s; cursor: default; }
+  .dest-card:hover { background: #1e1e1e; }
+  .dest-card:nth-child(1) { grid-row: 1 / 3; }
+  .dest-city { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 300; color: var(--light); margin-bottom: 8px; }
+  .dest-card:nth-child(1) .dest-city { font-size: 3.5rem; }
+  .dest-country { font-size: .65rem; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; }
+  .dest-card::before { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--gold); transition: width .4s ease; }
+  .dest-card:hover::before { width: 100%; }
+
+  /* TESTIMONIALS */
+  .testimonials { background: var(--dark); text-align: center; }
+  .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 64px; text-align: left; }
+  .testi-card { background: var(--dark3); padding: 40px; border-left: 2px solid var(--gold); }
+  .stars { color: var(--gold); font-size: .8rem; margin-bottom: 20px; }
+  .testi-text { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-style: italic; font-weight: 300; color: var(--light); line-height: 1.7; margin-bottom: 24px; }
+  .testi-author { font-size: .65rem; letter-spacing: 2px; color: var(--gold); text-transform: uppercase; }
+
+  /* CONTACT */
+  .contact { background: var(--dark3); display: grid; grid-template-columns: 1fr 1fr; gap: 0; padding: 0; }
+  .contact-info { padding: 120px 80px; }
+  .contact-form-wrap { padding: 120px 80px; background: var(--dark2); }
+  .contact-items { margin-top: 48px; display: flex; flex-direction: column; gap: 32px; }
+  .ci-label { font-size: .6rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+  .ci-val { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 300; color: var(--light); }
+  .cform { display: flex; flex-direction: column; gap: 16px; margin-top: 40px; }
+  .cform input, .cform textarea { background: var(--mid); border: 1px solid rgba(201,168,76,.2); color: var(--light); padding: 14px 18px; font-family: 'Montserrat', sans-serif; font-size: .75rem; font-weight: 300; outline: none; transition: border-color .3s; resize: none; }
+  .cform input:focus, .cform textarea:focus { border-color: var(--gold); }
+  .cform input::placeholder, .cform textarea::placeholder { color: var(--text-muted); }
+
+  /* FOOTER */
+  footer { background: #050505; padding: 60px; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; border-top: 1px solid rgba(201,168,76,.12); }
+  .footer-brand .logo { font-size: 1.2rem; margin-bottom: 16px; display: block; }
+  .footer-brand p { font-size: .72rem; line-height: 1.9; color: var(--text-muted); max-width: 280px; }
+  .footer-col h5 { font-size: .6rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-col ul a { color: var(--text-muted); text-decoration: none; font-size: .73rem; transition: color .3s; }
+  .footer-col ul a:hover { color: var(--gold); }
+  .footer-bottom { background: #050505; padding: 20px 60px; border-top: 1px solid #1a1a1a; display: flex; justify-content: space-between; align-items: center; font-size: .65rem; color: var(--text-muted); letter-spacing: 1px; }
+  .footer-bottom span { color: var(--gold); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* SPINNER */
+  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(10,10,10,.3); border-top-color: var(--dark); border-radius: 50%; animation: spin .6s linear infinite; vertical-align: middle; margin-right: 8px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media(max-width:900px){
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    section { padding: 80px 24px; }
+    .services-intro { grid-template-columns: 1fr; gap: 32px; }
+    .services-grid { grid-template-columns: 1fr; }
+    .fleet-grid { grid-template-columns: 1fr; }
+    .why-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .dest-grid { grid-template-columns: 1fr; }
+    .dest-card:nth-child(1) { grid-row: auto; }
+    .testi-grid { grid-template-columns: 1fr; }
+    .contact { grid-template-columns: 1fr; }
+    .contact-info, .contact-form-wrap { padding: 64px 24px; }
+    footer { grid-template-columns: 1fr 1fr; padding: 48px 24px; }
+    .booking-strip { padding: 44px 24px; }
+    .modal { padding: 36px 24px; }
+    .modal-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="logo">VIP<span>Transfers</span></a>
+  <ul class="nav-links">
+    <li><a href="#services" data-i18n="nav_services">Services</a></li>
+    <li><a href="#fleet" data-i18n="nav_fleet">Fleet</a></li>
+    <li><a href="#destinations" data-i18n="nav_destinations">Destinations</a></li>
+    <li>
+      <div class="lang-switcher">
+        <button class="lang-btn active" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('de')">DE</button>
+        <button class="lang-btn" onclick="setLang('ru')">RU</button>
+        <button class="lang-btn" onclick="setLang('ar')">AR</button>
+      </div>
+    </li>
+    <li><a href="#booking" class="nav-cta" data-i18n="nav_book">Book Now</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-line"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow" data-i18n="hero_eyebrow">Switzerland &amp; France — Premium Chauffeur</p>
+    <h1 class="hero-title" data-i18n="hero_title">Arrive in <em>absolute</em><br>elegance</h1>
+    <p class="hero-sub" data-i18n="hero_sub">Private VIP transfers crafted for discerning travellers. Door-to-door luxury, flawlessly orchestrated.</p>
+    <div class="hero-btns">
+      <a href="#booking" class="btn-primary" data-i18n="hero_btn1">Book a Transfer</a>
+      <a href="#services" class="btn-outline" data-i18n="hero_btn2">Explore Services</a>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING STRIP -->
+<div class="booking-strip" id="booking">
+  <h3 data-i18n="book_title">Reserve Your Journey</h3>
+  <div class="booking-form">
+    <div class="form-group">
+      <label data-i18n="book_service">Service Type</label>
+      <select id="b_service">
+        <option data-i18n="svc_airport">Airport Transfer</option>
+        <option data-i18n="svc_p2p">Point to Point</option>
+        <option data-i18n="svc_hourly">Hourly Hire</option>
+        <option data-i18n="svc_corp">Corporate</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label data-i18n="book_pickup">Pick-up Location</label>
+      <input type="text" id="b_from" placeholder="Geneva Airport…"/>
+    </div>
+    <div class="form-group">
+      <label data-i18n="book_dest">Destination</label>
+      <input type="text" id="b_to" placeholder="Verbier, Switzerland…"/>
+    </div>
+    <div class="form-group">
+      <label data-i18n="book_date">Date &amp; Time</label>
+      <input type="datetime-local" id="b_datetime"/>
+    </div>
+    <div class="form-group">
+      <label data-i18n="book_pax">Passengers</label>
+      <select id="b_pax">
+        <option value="1">1</option><option value="2">2</option>
+        <option value="3">3</option><option value="4">4</option>
+        <option value="5">5+</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>&nbsp;</label>
+      <button class="btn-primary" style="width:100%" onclick="openBookingModal()" data-i18n="book_cta">Get Quote</button>
+    </div>
+  </div>
+</div>
+
+<!-- BOOKING MODAL -->
+<div class="modal-overlay" id="bookingModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3 data-i18n="modal_title">Complete Your Booking</h3>
+    <p class="modal-sub" data-i18n="modal_sub">Fill in your details and we'll confirm shortly.</p>
+    <div class="modal-form">
+      <div class="modal-grid">
+        <input type="text" id="m_name" placeholder="Full Name *"/>
+        <input type="tel" id="m_phone" placeholder="Phone / WhatsApp *"/>
+      </div>
+      <input type="email" id="m_email" placeholder="Email Address *"/>
+      <select id="m_vehicle">
+        <option value="Mercedes S-Class">Mercedes S-Class (1–3 pax)</option>
+        <option value="Mercedes V-Class">Mercedes V-Class (1–7 pax)</option>
+        <option value="Sprinter VIP">Sprinter VIP (1–14 pax)</option>
+      </select>
+      <textarea id="m_notes" rows="3" placeholder="Special requests, flight number, luggage…"></textarea>
+      <div id="bookingStatus" class="status-msg"></div>
+      <button class="btn-primary" onclick="submitBooking()" id="submitBtn" data-i18n="modal_submit">Confirm Booking</button>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="services-intro reveal">
+    <div>
+      <p class="section-label" data-i18n="srv_label">What We Offer</p>
+      <h2 class="section-title" data-i18n="srv_title">Tailored<br><em>luxury</em> for<br>every journey</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="services-text">
+      <p data-i18n="srv_desc">From private airport pickups to full-day charters, our professional chauffeurs ensure every detail of your transfer is seamless, discreet, and impeccably delivered across Switzerland and France.</p>
+    </div>
+  </div>
+  <div class="services-grid reveal">
+    <div class="service-card"><span class="service-icon">✈️</span><h4 data-i18n="s1_title">Airport Transfers</h4><p data-i18n="s1_desc">Flight tracking, meet & greet, and seamless pickups from Geneva, Zurich, Lyon, and all major regional airports.</p></div>
+    <div class="service-card"><span class="service-icon">🏔️</span><h4 data-i18n="s2_title">Ski Resort Transfers</h4><p data-i18n="s2_desc">Arrive at Verbier, Zermatt, Courchevel, or Megève in style. We handle your luggage and ski equipment.</p></div>
+    <div class="service-card"><span class="service-icon">🏢</span><h4 data-i18n="s3_title">Corporate Travel</h4><p data-i18n="s3_desc">Punctual, professional, and discreet. Dedicated chauffeurs for executives and business delegations.</p></div>
+    <div class="service-card"><span class="service-icon">🥂</span><h4 data-i18n="s4_title">Event &amp; Gala</h4><p data-i18n="s4_desc">Weddings, galas, private parties — arrive with presence. Our fleet is available for bespoke event transportation.</p></div>
+    <div class="service-card"><span class="service-icon">🗺️</span><h4 data-i18n="s5_title">Day Tours</h4><p data-i18n="s5_desc">Private guided tours across the Swiss Alps, Lac Léman, or the French Riviera with a personal chauffeur-guide.</p></div>
+    <div class="service-card"><span class="service-icon">⏱️</span><h4 data-i18n="s6_title">Hourly Hire</h4><p data-i18n="s6_desc">At your disposal, hour by hour. Meetings, shopping, medical appointments — your chauffeur waits for you.</p></div>
+  </div>
+</section>
+
+<!-- FLEET -->
+<section class="fleet" id="fleet">
+  <div class="reveal">
+    <p class="section-label" data-i18n="fleet_label">Our Fleet</p>
+    <h2 class="section-title" data-i18n="fleet_title">The finest<br>vehicles for<br><em>elite</em> travel</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="fleet-grid reveal">
+    <div class="fleet-card"><div class="fleet-img">🚗</div><div class="fleet-info"><h4>Mercedes S-Class</h4><p data-i18n="f1_desc">Executive Sedan · Up to 3 passengers</p><div class="fleet-specs"><span>🪑 3</span><span>🧳 3</span><span>❄️ A/C</span></div></div></div>
+    <div class="fleet-card"><div class="fleet-img">🚙</div><div class="fleet-info"><h4>Mercedes V-Class</h4><p data-i18n="f2_desc">Premium Van · Up to 7 passengers</p><div class="fleet-specs"><span>🪑 7</span><span>🧳 7</span><span>❄️ A/C</span></div></div></div>
+    <div class="fleet-card"><div class="fleet-img">🚐</div><div class="fleet-info"><h4>Sprinter VIP</h4><p data-i18n="f3_desc">Luxury Minibus · Up to 14 passengers</p><div class="fleet-specs"><span>🪑 14</span><span>🧳 Large</span><span>❄️ A/C</span></div></div></div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="why">
+  <div class="reveal" style="text-align:center;max-width:600px;margin:0 auto 0;">
+    <p class="section-label" data-i18n="why_label">Why Choose Us</p>
+    <h2 class="section-title" data-i18n="why_title">The <em>standard</em><br>of excellence</h2>
+    <div class="divider" style="margin:28px auto;"></div>
+  </div>
+  <div class="why-grid reveal">
+    <div class="why-item"><div class="why-number">01</div><h4 data-i18n="w1_title">24 / 7 Availability</h4><p data-i18n="w1_desc">Day or night, our team and chauffeurs are available round-the-clock to accommodate any schedule.</p></div>
+    <div class="why-item"><div class="why-number">02</div><h4 data-i18n="w2_title">Flight Tracking</h4><p data-i18n="w2_desc">We monitor your flight in real time. Delays or early arrivals — your driver is always there on time.</p></div>
+    <div class="why-item"><div class="why-number">03</div><h4 data-i18n="w3_title">Fixed Pricing</h4><p data-i18n="w3_desc">No surprises. Transparent, all-inclusive rates with no hidden fees or metered surcharges.</p></div>
+    <div class="why-item"><div class="why-number">04</div><h4 data-i18n="w4_title">Discretion Guaranteed</h4><p data-i18n="w4_desc">Your privacy is our priority. Our chauffeurs operate with the utmost professionalism and confidentiality.</p></div>
+  </div>
+</section>
+
+<!-- DESTINATIONS -->
+<section class="destinations" id="destinations">
+  <div class="reveal">
+    <p class="section-label" data-i18n="dest_label">Where We Operate</p>
+    <h2 class="section-title" data-i18n="dest_title">Your <em>gateway</em><br>to the Alps</h2>
+    <div class="divider"></div>
+  </div>
+  <div class="dest-grid reveal">
+    <div class="dest-card"><div class="dest-city">Geneva</div><div class="dest-country">Switzerland · GVA Airport</div></div>
+    <div class="dest-card"><div class="dest-city">Zurich</div><div class="dest-country">Switzerland</div></div>
+    <div class="dest-card"><div class="dest-city">Verbier</div><div class="dest-country">Switzerland</div></div>
+    <div class="dest-card"><div class="dest-city">Lyon</div><div class="dest-country">France · LYS Airport</div></div>
+    <div class="dest-card"><div class="dest-city">Courchevel</div><div class="dest-country">France</div></div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="reveal">
+    <p class="section-label" data-i18n="testi_label">Client Voices</p>
+    <h2 class="section-title" data-i18n="testi_title">Trusted by<br><em>discerning</em> travellers</h2>
+    <div class="divider" style="margin:28px auto;"></div>
+  </div>
+  <div class="testi-grid reveal">
+    <div class="testi-card"><div class="stars">★★★★★</div><p class="testi-text" data-i18n="t1">"Impeccable service from start to finish. Our chauffeur was already waiting as we cleared customs."</p><div class="testi-author">James W. — London</div></div>
+    <div class="testi-card"><div class="stars">★★★★★</div><p class="testi-text" data-i18n="t2">"We booked transfers for our entire ski group across three days. Everything was punctual and spotless."</p><div class="testi-author">Sophie M. — Paris</div></div>
+    <div class="testi-card"><div class="stars">★★★★★</div><p class="testi-text" data-i18n="t3">"For corporate travel, reliability is everything. VIP Transfers has never let us down — not once."</p><div class="testi-author">Marcus T. — Zurich</div></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-info">
+    <p class="section-label" data-i18n="contact_label">Get In Touch</p>
+    <h2 class="section-title" data-i18n="contact_title">Let us plan<br>your <em>perfect</em><br>journey</h2>
+    <div class="divider"></div>
+    <div class="contact-items">
+      <div class="contact-item"><div class="ci-label" data-i18n="c_phone">Phone</div><div class="ci-val">+41 79 000 00 00</div></div>
+      <div class="contact-item"><div class="ci-label">Email</div><div class="ci-val">info@vip-transfers.ch</div></div>
+      <div class="contact-item"><div class="ci-label">WhatsApp</div><div class="ci-val">+41 79 000 00 00</div></div>
+      <div class="contact-item"><div class="ci-label" data-i18n="c_hours">Hours</div><div class="ci-val" data-i18n="c_hours_val">24 hours · 7 days a week</div></div>
+    </div>
+  </div>
+  <div class="contact-form-wrap">
+    <p class="section-label" data-i18n="cf_label">Send a Message</p>
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;color:var(--light);margin-top:8px;" data-i18n="cf_title">Quick Enquiry</h3>
+    <div class="cform">
+      <input type="text" id="c_name" placeholder="Full Name"/>
+      <input type="email" id="c_email" placeholder="Email Address"/>
+      <input type="tel" id="c_phone" placeholder="Phone / WhatsApp"/>
+      <input type="text" id="c_route" placeholder="Transfer Route"/>
+      <textarea rows="4" id="c_msg" placeholder="Additional details…"></textarea>
+      <div id="contactStatus" class="status-msg"></div>
+      <button class="btn-primary" onclick="submitContact()" data-i18n="cf_btn">Send Enquiry</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">
+    <a href="#" class="logo">VIP<span>Transfers</span></a>
+    <p data-i18n="footer_desc">Premium private chauffeur service across Switzerland and France. Elegance, punctuality, and absolute discretion — every journey, every time.</p>
+  </div>
+  <div class="footer-col"><h5 data-i18n="nav_services">Services</h5><ul><li><a href="#" data-i18n="svc_airport">Airport Transfers</a></li><li><a href="#" data-i18n="svc_ski">Ski Resorts</a></li><li><a href="#" data-i18n="svc_corp">Corporate Travel</a></li><li><a href="#" data-i18n="svc_hourly">Hourly Hire</a></li></ul></div>
+  <div class="footer-col"><h5 data-i18n="dest_label">Destinations</h5><ul><li><a href="#">Geneva</a></li><li><a href="#">Zurich</a></li><li><a href="#">Verbier</a></li><li><a href="#">Lyon</a></li><li><a href="#">Courchevel</a></li></ul></div>
+  <div class="footer-col"><h5 data-i18n="footer_company">Company</h5><ul><li><a href="#" data-i18n="footer_about">About Us</a></li><li><a href="#fleet" data-i18n="footer_fleet">Our Fleet</a></li><li><a href="admin/index.html">Admin</a></li><li><a href="#contact">Contact</a></li></ul></div>
+</footer>
+<div class="footer-bottom">
+  <div>© 2026 VIP Transfers Switzerland.</div>
+  <div>Crafted with <span>♥</span> for extraordinary journeys</div>
+</div>
+
+<!-- CONFIG - EDIT THIS -->
+<script>
+  // ══════════════════════════════════════════════
+  // CONFIGURATION — FILL IN AFTER SUPABASE SETUP
+  // ══════════════════════════════════════════════
+  const SUPABASE_URL = 'YOUR_SUPABASE_URL';       // e.g. https://xyzxyz.supabase.co
+  const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/i18n.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
