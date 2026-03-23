@@ -1,9 +1,9 @@
 // ─── SUPABASE CLIENT ────────────────────────────────────────────────────────
-let supabase = null;
+let supabaseClient = null;
 
 function initSupabase() {
   if (typeof window.supabase !== 'undefined' && SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   }
 }
 
@@ -49,7 +49,7 @@ document.getElementById('bookingModal').addEventListener('click', function(e) {
 
 // ─── CHECK AVAILABILITY ──────────────────────────────────────────────────────
 async function checkAvailability(datetime, vehicle) {
-  if (!supabase) return true; // if not configured, allow
+  if (!supabaseClient) return true; // if not configured, allow
 
   const dt = new Date(datetime);
   const buffer = 3 * 60 * 60 * 1000; // 3 hour buffer
@@ -97,7 +97,7 @@ async function submitBooking() {
   submitBtn.innerHTML = '<span class="spinner"></span>' + t('booking_loading');
 
   try {
-    if (!supabase) throw new Error('not_configured');
+    if (!supabaseClient) throw new Error('not_configured');
 
     // 1. Check availability
     const available = await checkAvailability(dt, vehicle);
@@ -110,7 +110,7 @@ async function submitBooking() {
     }
 
     // 2. Save to database
-    const { data, error } = await supabase.from('bookings').insert([{
+    const { data, error } = await supabaseClient.from('bookings').insert([{
       name, phone, email, vehicle,
       pickup_location: from,
       dropoff_location: to,
@@ -126,7 +126,7 @@ async function submitBooking() {
     if (error) throw error;
 
     // 3. Send email notification via Supabase Edge Function
-    await supabase.functions.invoke('send-booking-email', {
+    await supabaseClient.functions.invoke('send-booking-email', {
       body: { booking: data[0] }
     });
 
@@ -176,10 +176,10 @@ async function submitContact() {
   statusEl.textContent = t('booking_loading');
 
   try {
-    if (!supabase) throw new Error('not_configured');
+    if (!supabaseClient) throw new Error('not_configured');
 
-    await supabase.from('contact_messages').insert([{ name, email, phone, route, message: msg, created_at: new Date().toISOString() }]);
-    await supabase.functions.invoke('send-contact-email', { body: { name, email, phone, route, message: msg } });
+    await supabaseClient.from('contact_messages').insert([{ name, email, phone, route, message: msg, created_at: new Date().toISOString() }]);
+    await supabaseClient.functions.invoke('send-contact-email', { body: { name, email, phone, route, message: msg } });
 
     statusEl.className = 'status-msg success';
     statusEl.textContent = t('contact_success');
